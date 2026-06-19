@@ -32,3 +32,6 @@ Click the menu-bar icon (♫) to access all settings:
 - **Show Track Name:** Toggle the "Title — Artist" header line on or off.
 
 *(Your size, opacity, visibility, and position preferences are automatically remembered across relaunches).*
+
+## Acknowledgments
+Special thanks to the [lrclib](https://github.com/tranxuanthang/lrclib) project by tranxuanthang for providing the free, time-synced lyrics API that powers Lyro.
