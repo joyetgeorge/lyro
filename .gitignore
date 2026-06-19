@@ -1,0 +1,14 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS App Bundles
+*.app/
+
+# macOS System Files
+.DS_Store
+
+# Xcode (if generated later)
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
