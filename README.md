@@ -1,81 +1,34 @@
 # Lyro (macOS)
 
-A lightweight, always-on-top overlay that reads whatever is playing in the
-**Spotify Mac app** and shows **time-synced, karaoke-style lyrics** on screen.
+A lightweight, always-on-top overlay that reads whatever is playing in the **Spotify Mac app** and shows **time-synced, karaoke-style lyrics** on screen.
 
-- Native Swift (AppKit + SwiftUI), no Xcode project required.
-- Reads the current track + playhead from Spotify over AppleScript.
-- Fetches synced (LRC) lyrics from [lrclib.net](https://lrclib.net) — free, no API key.
-- Floating, click-through, translucent card pinned to the bottom (or top) of the
-  screen; lives on all Spaces and over full-screen apps.
-- Menu-bar icon (♫) for all controls. No Dock icon.
+- **Always on top:** Floating, click-through, translucent card pinned to your screen. Lives on all Spaces and over full-screen apps.
+- **Free Lyrics:** Fetches synced lyrics automatically (no API key required).
+- **Unobtrusive:** Menu-bar icon for controls. No Dock icon clutter.
 
-## Build & run
-
-```bash
-./run.sh          # builds, installs to /Applications, and launches
-# or
-./build.sh        # just builds Lyro.app (no install)
-open Lyro.app
-```
-
-`run.sh` copies the built app to `/Applications` (falling back to
-`~/Applications`), registers it with Launch Services, and launches that copy —
-so it's discoverable in Spotlight & Launchpad.
+## Build & Run
 
 Requires the Swift toolchain (Xcode or Command Line Tools) and macOS 13+.
 
-## Reopening after quitting
+```bash
+./run.sh
+```
+*(This automatically builds the app, installs it to your `/Applications` folder, and launches it).*
 
-The app lives in the menu bar only (no Dock icon), so after **Quit** you reopen
-it like any other app: search for **Lyro** in **Spotlight** /
-**Launchpad**, or double-click it in `/Applications`. It carries a proper app
-icon so it's easy to spot.
+## Permissions
 
-> **Not showing in Spotlight?** It is *not* marked `LSUIElement` (that flag would
-> hide it from Spotlight), so the usual cause is a stale system index. Rebuild it
-> with `sudo mdutil -i on /System/Volumes/Data && sudo mdutil -E /System/Volumes/Data`.
-
-## First-run permission
-
-The first time it runs, macOS shows:
-
+The first time you run it, macOS will ask for permission to read from Spotify:
 > **"Lyro" wants to control "Spotify".**
 
-Click **OK**. (If you miss it: System Settings ▸ Privacy & Security ▸
-**Automation** ▸ enable Spotify under Lyro, then choose
-**Reload Lyrics** from the menu-bar icon.)
+Click **OK**. 
+*(If you accidentally decline: go to System Settings ▸ Privacy & Security ▸ Automation, and enable Spotify under Lyro).*
 
-No permission is needed for network access or the overlay window itself.
+## Controls
 
-## Menu-bar controls (♫ icon)
+Click the menu-bar icon (♫) to access all settings:
+- **Click-through (lock):** Uncheck to drag the card to a new spot. Check to lock it and click through the overlay.
+- **Position & Size:** Snap the card to a 3x3 grid or drag it anywhere. Adjust the slider to scale text up or down.
+- **Background Opacity:** Fade the frosted card from solid down to fully see-through.
+- **Show Track Name:** Toggle the "Title — Artist" header line on or off.
 
-| Item | Effect |
-|------|--------|
-| *(top two rows)* | Current track + lyrics status |
-| **Click-through (lock)** | When checked, mouse clicks pass through the overlay. Uncheck to drag the card to a new spot. |
-| **Show Track Name** | Toggle the "Title — Artist" header line on or off. |
-| **Position** | Snap the card to any of nine screen positions (a 3×3 grid). Or uncheck the lock and drag it anywhere — your spot is remembered across relaunches. |
-| **Size** | Slider to scale the whole card (and its text) larger or smaller. |
-| **Background Opacity** | Slider to fade the frosted card from solid down to fully see-through (just floating lyrics). |
-| **Reload Lyrics** (⌘R) | Re-fetch lyrics for the current track. |
-| **Quit Lyro** (⌘Q) | Exit. |
-
-All of these (size, opacity, track-name visibility, position) are remembered
-across relaunches.
-
-The active lyric line animates with a spring-driven slide, scale, and gradient
-pop as the song advances, so it stays lively and easy to follow.
-
-## How it works
-
-- `SpotifyController` polls Spotify once a second via `osascript`
-  (`player state`, `current track`, `player position`).
-- `LyricsService` requests lyrics from lrclib's `/api/get` (exact signature
-  match), falling back to `/api/search` when that misses, then parses the LRC
-  timestamps.
-- `LyricsViewModel` anchors the last known playhead to a monotonic clock and
-  interpolates 10×/second, so the highlighted line stays in sync between polls.
-- `OverlayView` (SwiftUI) renders previous / current / next lines in a
-  translucent card; `AppDelegate` hosts it in a borderless, screen-saver-level
-  `NSWindow`.
+*(Your size, opacity, visibility, and position preferences are automatically remembered across relaunches).*
